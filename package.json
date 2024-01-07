@@ -1,6 +1,7 @@
 {
-  "name": "1er-pre-entrega-backend",
+  "name": "backend-desafio-3",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,19 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.18.2"
-  },
   "devDependencies": {
     "nodemon": "^3.0.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Diebar23/Backend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Diebar23/Backend/issues"
-  },
-  "homepage": "https://github.com/Diebar23/Backend#readme",
-  "description": ""
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
