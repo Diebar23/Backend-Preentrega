@@ -9,8 +9,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json()); 
 
 //Routing: 
-app.use("/api", productsRouter);
-app.use("/api", cartsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 
 //Listen
 app.listen(PUERTO, () => {
