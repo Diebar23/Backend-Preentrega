@@ -9,10 +9,10 @@ class ProductManager {
     }
     //Metodos
 
-    async addProduct(nuevoObjeto) {
-        let {title, description, price, img, code, stock} = nuevoObjeto;
+    async addProduct(newObject) {
+        let {title, description, price, img, code, stock, status = true, category,} = newObject;
  
-        if(!title || !description || !price || !img || !code || !stock) {
+        if(!title || !description || !price || !img || !code || !stock || !status || !category) {
             console.log("Todos los campos deben estar completos");
             return;
         }
@@ -29,7 +29,9 @@ class ProductManager {
             price,
             img,
             code,
-            stock            
+            stock,
+            status,
+            category            
         }
         
 
@@ -37,7 +39,7 @@ class ProductManager {
 
         //Guardo el array en el archivo
 
-        await this.guardarArchivo(this.products);
+        await this.saveFile(this.products);
 
     }
 
@@ -45,8 +47,8 @@ class ProductManager {
         try {
             //Debe tener un método getProducts, el cual debe leer el archivo de productos y devolver todos los productos en formato de arreglo.
 
-            const arrayProductos = this.leerArchivo();
-            return arrayProductos;
+            const arrayProducts = this.readFile();
+            return arrayProducts;
         } catch (error) {
             console.log("Error al leer el archivo", error);
         }
@@ -56,14 +58,14 @@ class ProductManager {
 
     async getProductById(id) {
         try {
-            const arrayProductos = await this.leerArchivo();
-            const buscado = arrayProductos.find(item => item.id === id);
+            const arrayProducts = await this.readFile();
+            const found = arrayProducts.find(item => item.id === id);
 
-                if(!buscado) {
+                if(!found) {
                     console.log("Producto no encontrado");
                 } else {
                     console.log("Producto encontrado");
-                    return buscado;
+                    return found;
                 }
 
         } catch (error) {
@@ -74,36 +76,36 @@ class ProductManager {
 
     //Nuevos metodos desafio 2
 
-    async leerArchivo() {
+    async readFile() {
         try {
-            const respuesta = await fs.readFile(this.path, "utf-8");
-            const arrayProductos = JSON.parse(respuesta);
-            return arrayProductos;
+            const responce = await fs.readFile(this.path, "utf-8");
+            const arrayProducts = JSON.parse(responce);
+            return arrayProducts;
 
         }catch (error) {
             console.log("Error al leer archivo", error);
         }
     }
 
-    async guardarArchivo(arrayProductos){
+    async saveFile(arrayProducts){
         try{
-            await fs.writeFile(this.path, JSON.stringify(arrayProductos, null, 2))
+            await fs.writeFile(this.path, JSON.stringify(arrayProducts, null, 2))
         } catch (error) {
             console.log("Error al guardar archivo", error);
         }
     }
 
     //Se actualiza algun producto
-    async updateProduct(id, productoActualizado) {
+    async updateProduct(id, productUpdated) {
         try {
-            const arrayProductos = await this.leerArchivo();
+            const arrayProducts = await this.readFile();
 
-            const index = arrayProductos.findIndex(item=> item.id === id);
+            const index = arrayProducts.findIndex(item=> item.id === id);
 
             if(index !== -1) {
                 //Array splice reemplaza el objeto en la posicion del index
-                arrayProductos.splice(index, 1, productoActualizado);
-                await this.guardarArchivo(arrayProductos);
+                arrayProducts.splice(index, 1, productUpdated);
+                await this.saveFile(arrayProducts);
             } else {
                 console.log("No se encontró el producto");
             }
@@ -116,14 +118,14 @@ class ProductManager {
 
     async deleteProduct(id) {
         try {
-            const arrayProductos = await this.leerArchivo();
+            const arrayProducts = await this.readFile();
 
-            const index = arrayProductos.findIndex(item=> item.id === id);
+            const index = arrayProducts.findIndex(item=> item.id === id);
 
             if(index !== -1) {
                 //Array splice reemplaza el objeto en la posicion del index
-                arrayProductos.splice(index, 1);
-                await this.guardarArchivo(arrayProductos);
+                arrayProducts.splice(index, 1);
+                await this.saveFile(arrayProducts);
             } else {
                 console.log("No se encontró el producto");
             }

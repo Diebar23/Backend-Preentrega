@@ -1,15 +1,15 @@
 const express = require("express"); 
 const router = express.Router(); 
 const CartManager = require("../controllers/cart-manager.js"); 
-const cartManager = new ProductManager("./src/models/carts.json"); 
+const cartManager = new CartManager("./src/models/carts.json"); 
 
 
 //Crear carrito nuevo: 
 
 router.post("/", async (req, res) => {
     try {
-        const nuevoCarrito = await cartManager.crearCarrito(); 
-        res.json(nuevoCarrito)
+        const newCart = await cartManager.createCart(); 
+        res.json(newCart)
     } catch (error) {
         console.error("Error al crear un nuevo carrito", error); 
         res.status(500).json({error: "Error del servidor"});
@@ -20,8 +20,32 @@ router.post("/", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
     const cartId = parseInt(req.params.cid);
-    
 
-})
+    try {
+        const cart = await cartManager.getCartById(cartId);
+        res.json(cart.products);
+    } catch (error) {
+        console.error("Error al obtener carrito", error);
+        res.status(500).json({ error: "Error interno de servidor" });
+    }
+});
+
+
+//Agregar productos a un carrito
+
+
+router.post("/:cid/product/:pid", async (req, res) => {
+    const cartId = parsenInt(req.params.cid);
+    const productId = req.params.pid;
+    const quantity = req.body.quantity || 1;
+
+    try {
+        const updateCart = await cartManager.addProductToCart(productId);
+        res.json(updateCart);
+    } catch (error) {
+        console.error("Error al agregar producto al carrito", error);
+        res.status(500).json({ error: "Error interno del servidor" });   
+    }
+});
 
 module.exports = router; 
