@@ -10,9 +10,9 @@ class ProductManager {
     //Metodos
 
     async addProduct(newObject) {
-        let {title, description, price, img, code, stock, status = true, category,} = newObject;
+        let {title, description, price, img, code, stock, status = true, category, thumbnails = []} = newObject;
  
-        if(!title || !description || !price || !img || !code || !stock || !status || !category) {
+        if(!title || !description || !price || !img || !code || !stock || !status || !category || !thumbnails) {
             console.log("Todos los campos deben estar completos");
             return;
         }
@@ -31,7 +31,8 @@ class ProductManager {
             code,
             stock,
             status,
-            category            
+            category,
+            thumbnails            
         }
         
 
