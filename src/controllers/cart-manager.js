@@ -5,8 +5,6 @@ class CartManager {
         this.carts = [];
         this.path = path;
         this.ultId = 0;
-
-        //Cargar los carritos almacenados
         this.loadCarts();
     }
 
@@ -27,7 +25,7 @@ class CartManager {
     }
 
     async saveCarts() {
-        await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
+        await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2), 'utf8');
     }
 
     async createCart() {
@@ -45,7 +43,7 @@ class CartManager {
 
     async getCartById(cartId) {
         try {
-            const cart = this.carts.find(c => c.id === cartId);
+            const cart = this.carts.find(c => c.id == cartId);
 
             if (!cart) {
                 throw new Error("No se encuentra carrito con el id" + cartId)

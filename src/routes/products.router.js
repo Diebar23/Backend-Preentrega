@@ -10,11 +10,11 @@ const productManager = new ProductManager("./src/models/products.json");
 router.get("/products", async (req, res) => {
     try {
         const limit = req.query.limit;
-        const productos = await productManager.getProducts();
+        const products = await productManager.getProducts();
         if (limit) {
-            res.json(productos.slice(0, limit));
+            res.json(products.slice(0, limit));
         } else {
-            res.json(productos);
+            res.json(products);
         }
     } catch (error) {
 
@@ -32,14 +32,14 @@ router.get("/products/:pid", async (req, res) => {
 
     try {
         
-        const producto = await productManager.getProductById(parseInt(id)); 
-        if (!producto) {
+        const product = await productManager.getProductById(parseInt(id)); 
+        if (!product) {
             return res.json({
                 error: "Producto no encontrado"
             });
         }
 
-        res.json(producto);
+        res.json(product);
     } catch (error) {
         console.error("Error al obtener producto", error);
         res.status(500).json({
