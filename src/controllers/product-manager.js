@@ -35,7 +35,7 @@ class ProductManager {
         };
         
         if (arrayProducts.length > 0) {
-            ProductManager.ultId = arrayProductos.reduce((maxId, product) => Math.max(maxId, product.id), 0);
+            ProductManager.ultId = arrayProducts.reduce((maxId, product) => Math.max(maxId, product.id), 0);
         }
         
         newProduct.id = ++ProductManager.ultId; 
@@ -95,7 +95,7 @@ class ProductManager {
         }
     }
     //Se actualiza algun producto
-    async updateProduct(id, productUpdated) {
+    async updateProduct(id, updateProduct) {
         try {
             const arrayProducts = await this.readFile();
 
