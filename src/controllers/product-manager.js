@@ -95,14 +95,14 @@ class ProductManager {
         }
     }
     //Se actualiza algun producto
-    async updateProduct(id, updateProduct) {
+    async updatedProduct(id, updatedProduct) {
         try {
             const arrayProducts = await this.readFile();
 
             const index = arrayProducts.findIndex(item => item.id === id);
 
             if(index !== -1) {
-                arrayProducts[index] = { ...arrayProducts[index], ...updateProduct };
+                arrayProducts[index] = { ...arrayProducts[index], ...updatedProduct };
                 await this.saveFile(arrayProducts);
                 console.log("Producto actualizado");
             } else {
