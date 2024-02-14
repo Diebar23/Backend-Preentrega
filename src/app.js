@@ -24,29 +24,36 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
+app.get("/api/products", async (req, res) => {
+    const page = req.query.page || 1;
+    const limit = 2; 
+
+    try {
+        const productsList = await productModel.paginate({}, {limit, page})
+
+        const productFinal = productsList.docs.map(pizza => {
+            const {_id, ...rest} = product.toObject();
+            return rest;
+        })
+        
+
+        res.render("products", {
+            product: productFinal,
+            hasPrevPage: productsList.hasPrevPage,
+            hasNextPage: productsList.hasNextPage,
+            prevPage: productsList.prevPage, 
+            nextPage: productsList.nextPage,
+            currentPage: productsList.page,
+            totalPages: productsList.totalPages
+        });
+    } catch (error) {
+        console.log("Error en la paginacion ", error); 
+        res.status(500).send("Error en el server");
+    }
+})
+
 //Listen
 const httpServer = app.listen(PUERTO, () => {
     console.log(`Servidor escuchando en el puerto ${PUERTO}`);
 
-});
-
-//chat en el ecommerce: 
-const MessageModel = require("./dao/models/message.model.js");
-const io = new socket.Server(httpServer);
-
-
-io.on("connection",  (socket) => {
-    console.log("Nuevo usuario conectado");
-
-    socket.on("message", async data => {
-
-        //Guardo el mensaje en MongoDB: 
-        await MessageModel.create(data);
-
-        //Obtengo los mensajes de MongoDB y se los paso al cliente: 
-        const messages = await MessageModel.find();
-        console.log(messages);
-        io.sockets.emit("message", messages);
-     
-    })
 })

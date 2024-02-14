@@ -34,16 +34,3 @@ chatBox.addEventListener("keyup", (event) => {
         }
     }
 })
-
-//Listener de Mensajes: 
-
-socket.on("message", data => {
-    let log = document.getElementById("messagesLogs");
-    let messages = "";
-
-    data.forEach( message => {
-        messages = messages + `${message.user} dice: ${message.message} <br>`
-    })
-
-    log.innerHTML = messages;
-})
