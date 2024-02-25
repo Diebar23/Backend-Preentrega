@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 //conexión a la BD: 
 
-mongoose.connect("mongodb+srv://barbasdiego:cursocoder@cluster0.6f0lw9x.mongodb.net/ecommerce?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://barbasdiego75:coderhouse@cluster0.wbn5cfo.mongodb.net/e-commerce?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => console.log("Conexión exitosa"))
     .catch(() => console.log("Error de conexión"))
     
