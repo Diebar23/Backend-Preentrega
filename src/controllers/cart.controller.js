@@ -1,5 +1,11 @@
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
+const TicketModel = require("../models/ticket.model.js");
+const UserModel = require("../models/user.model.js");
+const ProductRepository = require("../repositories/product.repository.js");
+const productRepository = new ProductRepository();
+const { generateUniqueCode, calcularTotal } = require("../utils/cart.utils.js");
+
 
 class CartController {
     async newCart(req, res) {
@@ -56,7 +62,7 @@ class CartController {
     async updateProductsInCart(req, res) {
         const cartId = req.params.cid;
         const updatedProducts = req.body;
-        // Debes enviar un array de productos enla solicitud
+        
         try {
             const updatedCart = await cartRepository.updateProductsInCart(cartId, updatedProducts);
             res.json(updatedCart);
@@ -98,6 +104,58 @@ class CartController {
             res.status(500).send("Error");
         }
     }
+
+    async finishPurchase(req, res) {
+        const cartId = req.params.cid;
+        try {
+
+            // Obtener el carrito y sus productos
+            const cart = await cartRepository.getProductsFromCart(cartId);
+            const products = cart.products;
+
+            // Inicializar un array para almacenar los productos no disponibles
+            const productsNotAvailable = [];
+
+            // Verificar el stock y actualizar los productos disponibles
+            for (const item of products) {
+                const productId = item.product;
+                const product = await productRepository.getProductById(productId);
+                if (product.stock >= item.quantity) {
+
+                    // Si hay stock, restar la cantidad del producto
+                    product.stock -= item.quantity;
+                    await product.save();
+                } else {
+
+                    // Si no hay stock, agregar el ID del producto al array de no disponibles
+                    productsNotAvailable.push(productId);
+                }
+            }
+
+            const userWithCart = await UserModel.findOne({ cart: cartId });
+
+            // Crear un ticket de la compra
+            const ticket = new TicketModel({
+                code: generateUniqueCode(),
+                purchase_datetime: new Date(),
+                amount: calcularTotal(cart.products),
+                purchaser: userWithCart._id
+            });
+            await ticket.save();
+
+            // Eliminar del carrito los productos que se compraron
+            cart.products = cart.products.filter(item => productsNotAvailable.some(productId => productId.equals(item.product)));
+
+            // Guardar el carrito actualizado en la base de datos
+            await cart.save();
+
+            res.status(200).json({ productsNotAvailable });
+        } catch (error) {
+            console.error('Error al procesar la compra:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
 }
 
 module.exports = CartController;

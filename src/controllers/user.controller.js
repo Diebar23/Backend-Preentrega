@@ -13,7 +13,6 @@ class UserController {
                 return res.status(400).send("El usuario ya existe");
             }
 
-            //Creo un nuevo carrito: 
             const newCart = new CartModel();
             await newCart.save();
 
@@ -33,7 +32,7 @@ class UserController {
             });
 
             res.cookie("commerceCookieToken", token, {
-                maxAge: 3600000,
+                maxAge: 2000000,
                 httpOnly: true
             });
 
@@ -63,7 +62,7 @@ class UserController {
             });
 
             res.cookie("commerceCookieToken", token, {
-                maxAge: 3600000,
+                maxAge: 2000000,
                 httpOnly: true
             });
 
@@ -75,7 +74,9 @@ class UserController {
     }
 
     async profile(req, res) {
-        //Con DTO: 
+
+        //Con dto: 
+        
         const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role);
         const isAdmin = req.user.role === 'admin';
         res.render("profile", { user: userDto, isAdmin });

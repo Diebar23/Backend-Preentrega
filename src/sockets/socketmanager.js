@@ -13,7 +13,7 @@ class SocketManager {
         this.io.on("connection", async (socket) => {
             console.log("Un cliente se conectó");
             
-            socket.emit("product", await productRepository.getProducts() );
+            socket.emit("products", await productRepository.getProducts() );
 
             socket.on("deleteProduct", async (id) => {
                 await productRepository.deleteProduct(id);

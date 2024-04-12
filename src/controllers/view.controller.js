@@ -5,7 +5,7 @@ const cartRepository = new CartRepository();
 class ViewsController {
     async renderProducts(req, res) {
         try {
-            const { page = 1, limit = 3 } = req.query;
+            const { page = 1, limit = 2 } = req.query;
 
             const skip = (page - 1) * limit;
 
@@ -63,10 +63,22 @@ class ViewsController {
                 return res.status(404).json({ error: "Carrito no encontrado" });
             }
 
-            const productsInCart = cart.products.map(item => ({
-                product: item.product.toObject(),
-                quantity: item.quantity
-            }));
+            let totalPurchase = 0;
+
+            const productsInCart = cart.products.map(item => {
+                const product = item.product.toObject();
+                const quantity = item.quantity;
+                const totalPrice = product.price * quantity;
+                
+                totalPurchase += totalPrice;
+
+                return {
+                    product: { ...product, totalPrice },
+                    quantity,
+                    cartId
+            };
+
+        });
 
 
             res.render("carts", { products: productsInCart });

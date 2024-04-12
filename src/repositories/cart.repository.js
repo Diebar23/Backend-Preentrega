@@ -21,7 +21,7 @@ async getProductsFromCart(idCart) {
     try {
         const cart = await CartModel.findById(idCart);
         if (!cart) {
-            console.log("No existe carrito con el id");
+            console.log("No existe carrito con ese id");
             return null;
         }
         return cart;
